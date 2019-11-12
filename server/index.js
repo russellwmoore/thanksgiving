@@ -18,6 +18,7 @@ app.use((req, res, next) => {
   next();
 });
 
+//includes here ?
 app.get("/api/people", (req, res, next) => {
   Person.findAll({ include: [{ model: Dish }] })
     .then(people => res.send(people))
@@ -88,6 +89,7 @@ app.post("/api/people", (req, res, next) => {
     .catch(next);
 });
 
+// includes here
 app.get("/api/dishes", (req, res, next) => {
   Dish.findAll({ include: [{ model: Person }] })
     .then(dish => res.send(dish))
@@ -123,19 +125,20 @@ app.put("/api/dishes/:id", (req, res, next) => {
 app.post("/api/dishes", (req, res, next) => {
   Dish.create(req.body)
     .then(dish => res.send(dish))
-    .catchs(next);
-});
-
-app.delete("/api/dishes/:id", (req, res, next) => {
-  Dish.destroy({
-    where: {
-      id: req.params.id
-    }
-  })
-    .then(rows => res.send(`deleted ${req.params.id}, ${rows}`))
     .catch(next);
 });
 
+app.delete("/api/dishes/:id", async (req, res, next) => {
+  let dish = await Dish.findByPk(req.params.id);
+  if (dish.personId === null) {
+    await dish.destroy();
+    res.send(`${dish.name} Detroyed`);
+  } else {
+    res.send("cannont destroy dish that is coming to tgives!");
+  }
+});
+
+//maybe we give this to them??
 app.use((err, req, res, next) => {
   if (err.status !== 500) {
     res.send({ message: "Oops! There's an error on the server", error: err });
