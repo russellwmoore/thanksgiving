@@ -1,12 +1,13 @@
-const { app } = require('./app');
+const { app } = require("./app");
 const PORT = 3000;
-const { doSeed } = require('../seed');
-const { db } = require('../db');
+const { db } = require("../db");
+
+/*
+  DO NOT TOUCH THIS FILE
+*/
+
 db.sync({ force: true }).then(() => {
-  // maybe have seeding be a separate script?
-  doSeed().then(() => {
-    app.listen(PORT, () => {
-      console.log('listenin');
-    });
+  app.listen(PORT, () => {
+    console.log("listenin");
   });
 });
