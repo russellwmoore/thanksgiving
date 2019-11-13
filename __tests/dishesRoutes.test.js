@@ -1,9 +1,5 @@
 // tests for /api/dishes
 
-// it should retrieve a list of all the dishes
-// it should retriece
-// tests for api/people
-
 // supertest is a module that allows us to test our express server
 const request = require("supertest");
 const { app } = require("./../server/app.js");
