@@ -21,6 +21,9 @@ describe("/api/people routes", () => {
     const person2 = { name: "russell", isAttending: false };
     const person3 = { name: "ryan", isAttending: true };
 
+    const dish1 = { name: "turkey", description: "delicious briney turkey" };
+    const dish2 = { name: "pie", description: "delicious pumpkiney pie" };
+
     // example test using vanilla promise syntax (no async/await)
     it("should retrieve all people if no params are given", () => {
       // we will seed the db before every test so that we can isolate each test as much as possible
@@ -96,28 +99,42 @@ describe("/api/people routes", () => {
       }
     });
 
-    it("should filter users using the includeDishes query string", async () => {
-      // HINT: be sure to use await in here!
+    it("should return users and their Dishes using `include_dishes=true` query string", async () => {
+      const [mark, russell, ryan] = await Promise.all([
+        Person.create(person1),
+        Person.create(person2),
+        Person.create(person3)
+      ]);
+
+      const [turk, pie] = await Promise.all([
+        Dish.create(dish1),
+        Dish.create(dish2)
+      ]);
+
+      await turk.update({ personId: mark.id });
+      await pie.update({ personId: ryan.id });
+
+      // your code below
     });
-  });
 
-  describe("POST to /api/people", () => {
-    const person1 = { name: "eliot" };
-    const person2 = { name: "crystal", isAttending: false };
-    it("should create a new person and return that persons information if all the required information is given", async () => {
-      // HINT: You will be sending data then checking response. No pre-seeding required
-      // Make sure you test both the response and whats inside the database
+    describe("POST to /api/people", () => {
+      const person1 = { name: "eliot" };
+      const person2 = { name: "crystal", isAttending: false };
+      it("should create a new person and return that persons information if all the required information is given", async () => {
+        // HINT: You will be sending data then checking response. No pre-seeding required
+        // Make sure you test both the response and whats inside the database
+      });
+      it("should return status code 400 if missing required information", () => {});
     });
-    it("should return status code 400 if missing required information", () => {});
-  });
 
-  xdescribe("PUT to /api/people/:id", () => {
-    it("should update a persons information", () => {});
-    it("should return a 400 if given an invalid id", () => {});
-  });
+    xdescribe("PUT to /api/people/:id", () => {
+      it("should update a persons information", () => {});
+      it("should return a 400 if given an invalid id", () => {});
+    });
 
-  xdescribe("DELETE to /api/people/:id", () => {
-    it("should remove a person from the database", () => {});
-    it("should return a 400 if given an invalid id", () => {});
+    xdescribe("DELETE to /api/people/:id", () => {
+      it("should remove a person from the database", () => {});
+      it("should return a 400 if given an invalid id", () => {});
+    });
   });
 });
