@@ -9,11 +9,13 @@ Make a database called `tgives`
 
 You need to make 2 models: person and dish.
 
-A person has name and an attending status. 
+A person has name and an attending status.
 
 A dish has name and description.
 
 Each person is responsible for a dish.
+
+~Be sure to create a seed file as the tests will wipe the database everytime you run them.
 
 #### Routes directions
 
