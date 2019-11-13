@@ -19,7 +19,14 @@ app.use((req, res, next) => {
 //includes here ?
 
 app.get('/api/people', (req, res, next) => {
-  Person.findAll({ include: [{ model: Dish }] })
+  const { isAttending } = req.query;
+  whereObj = {};
+  if (isAttending) {
+    isAttending === 'true'
+      ? (whereObj.isAttending = true)
+      : (whereObj.isAttending = false);
+  }
+  Person.findAll({ where: whereObj, include: [{ model: Dish }] })
     .then(people => res.send(people))
     .catch(next);
 });
