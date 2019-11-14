@@ -21,10 +21,12 @@ as the tests will wipe the database everytime you run them.
 
 #### Routes/Tests
 
-Follow test descriptions to fillout appropriate routes for `api/people` and `api/dishes`.
+Follow the test descriptions to fillout appropriate routes for `api/people` and `api/dishes`.
 
 Note:
 You will be building out all of the actual test logic for yourself.
+A few example tests have been provided to help you get started.
+Work on the people routes first then do the dishes routes.
 
 To run tests use `npm test`.
 
