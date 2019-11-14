@@ -16,14 +16,13 @@ afterAll(async done => {
   done();
 });
 describe('/api/people routes', () => {
+  const person1 = { name: 'mark', isAttending: true };
+  const person2 = { name: 'russell', isAttending: false };
+  const person3 = { name: 'ryan', isAttending: true };
+
+  const dish1 = { name: 'turkey', description: 'delicious briney turkey' };
+  const dish2 = { name: 'pie', description: 'delicious pumpkiney pie' };
   describe('GET to /api/people', () => {
-    const person1 = { name: 'mark', isAttending: true };
-    const person2 = { name: 'russell', isAttending: false };
-    const person3 = { name: 'ryan', isAttending: true };
-
-    const dish1 = { name: 'turkey', description: 'delicious briney turkey' };
-    const dish2 = { name: 'pie', description: 'delicious pumpkiney pie' };
-
     // example test using vanilla promise syntax (no async/await)
     it('should retrieve all people if no params are given', () => {
       // we will seed the db before every test so that we can isolate each test as much as possible
@@ -100,23 +99,24 @@ describe('/api/people routes', () => {
     });
 
     it('should return users and their Dishes using `include_dishes=true` query string', async () => {
-      const [mark, russell, ryan] = await Promise.all([
-        Person.create(person1),
-        Person.create(person2),
-        Person.create(person3),
-      ]);
+      try {
+        const [mark, russell, ryan] = await Promise.all([
+          Person.create(person1),
+          Person.create(person2),
+          Person.create(person3),
+        ]);
 
-      const [turk, pie] = await Promise.all([
-        Dish.create({ ...dish1, personId: mark.id }),
-        Dish.create({ ...dish2, personId: ryan.id }),
-      ]);
-
-      // your code below
+        const [turk, pie] = await Promise.all([
+          Dish.create({ ...dish1, personId: mark.id }),
+          Dish.create({ ...dish2, personId: ryan.id }),
+        ]);
+        // your code below
+      } catch (err) {
+        fail(err);
+      }
     });
   });
   xdescribe('POST to /api/people', () => {
-    const person1 = { name: 'eliot' };
-    const person2 = { name: 'crystal', isAttending: false };
     it('should create a new person and return that persons information if all the required information is given', async () => {
       // HINT: You will be sending data then checking response. No pre-seeding required
       // Make sure you test both the API response and whats inside the database anytime you create, update, or delete from the database
