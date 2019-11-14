@@ -110,7 +110,24 @@ describe('/api/people routes', () => {
           Dish.create({ ...dish1, personId: mark.id }),
           Dish.create({ ...dish2, personId: ryan.id }),
         ]);
+
         // your code below
+        const response = await request(app)
+          .get('/api/people/?include_dishes=true')
+          .expect('content-type', /json/)
+          .expect(200);
+
+        const peopleAndDishes = response.body;
+        // check that every person response has a dishes array
+        peopleAndDishes.map(person => {
+          expect(Array.isArray(person.dishes)).toBe(true);
+        });
+
+        // check if the dish response is the same as the dish seed
+        const markResponse = peopleAndDishes.find(
+          person => person.id === mark.id
+        );
+        expect(markResponse.dishes[0].name).toBe(dish1.name);
       } catch (err) {
         fail(err);
       }
