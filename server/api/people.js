@@ -18,4 +18,19 @@ router.get('/', (req, res, next) => {
   });
 });
 
+router.post('/', (req, res, next) => {
+  const userInfo = req.body;
+  const errors = {};
+  // its best to catch validation errors before expensive procedures such as db calls
+  if (!userInfo.name) {
+    errors.name = 'Name not found';
+    return res.status(400).send(errors);
+  }
+  Person.create(userInfo)
+    .then(createdPerson => {
+      res.status(201).send(createdPerson);
+    })
+    .catch(next);
+});
+
 module.exports = router;

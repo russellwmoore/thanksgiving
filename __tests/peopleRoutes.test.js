@@ -133,12 +133,43 @@ describe('/api/people routes', () => {
       }
     });
   });
-  xdescribe('POST to /api/people', () => {
+  describe('POST to /api/people', async () => {
     it('should create a new person and return that persons information if all the required information is given', async () => {
       // HINT: You will be sending data then checking response. No pre-seeding required
       // Make sure you test both the API response and whats inside the database anytime you create, update, or delete from the database
+      try {
+        const postUserInfo = { name: 'Eliot', isAttending: false };
+
+        const postResponse = await request(app)
+          .post('/api/people')
+          .send(postUserInfo)
+          .expect(201);
+
+        const eliotResponse = postResponse.body;
+        const dbEliot = await Person.findOne({ where: { name: 'Eliot' } });
+
+        expect(eliotResponse).toEqual(
+          expect.objectContaining({
+            id: dbEliot.id,
+            name: dbEliot.name,
+            isAttending: dbEliot.isAttending,
+          })
+        );
+      } catch (err) {
+        fail(err);
+      }
     });
-    it('should return status code 400 if missing required information', () => {});
+    it('should return status code 400 if missing required information', async () => {
+      const notEnoughInfo = { isAttending: true };
+
+      const response = await request(app)
+        .post('/api/people')
+        .send(notEnoughInfo)
+        .expect(400);
+
+      const errors = response.body;
+      expect(errors.name).toEqual('Name not found');
+    });
   });
 
   xdescribe('PUT to /api/people/:id', () => {
