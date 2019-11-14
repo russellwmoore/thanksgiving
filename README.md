@@ -1,13 +1,14 @@
 # Assignment
 
-## To install
+## Setup
 
 Run `npm install`  
-Make a database called `tgives`
+Make a database called `tgives`  
+All of the files and folders neccessary for completing the homework have been created for you
 
-#### Models Directions
+#### Models
 
-You need to make 2 models: Person and Dish.
+You need to define 2 models: Person and Dish.
 
 A person has name and an attending status.
 
@@ -15,11 +16,15 @@ A dish has name and description.
 
 A person may be responsible for a dish.
 
-~Be sure to create a seed file as the tests will wipe the database everytime you run them.
+~Be sure to create a seed file if you want to interact with your API outside of the tests,
+as the tests will wipe the database everytime you run them.
 
-#### Routes directions
+#### Routes/Tests
 
-Follow tests to fillout appropriate routes for `api/people` and `api/dishes`.
+Follow test descriptions to fillout appropriate routes for `api/people` and `api/dishes`.
+
+Note:
+You will be building out all of the actual test logic for yourself.
 
 To run tests use `npm test`.
 
