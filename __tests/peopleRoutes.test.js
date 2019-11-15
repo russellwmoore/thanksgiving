@@ -139,7 +139,7 @@ describe("/api/people routes", () => {
       }
     });
   });
-  describe("POST to /api/people", async () => {
+  describe("POST to /api/people", () => {
     it("should create a new person and return that persons information if all the required information is given", async () => {
       // HINT: You will be sending data then checking response. No pre-seeding required
       // Make sure you test both the API response and whats inside the database anytime you create, update, or delete from the database
@@ -178,13 +178,97 @@ describe("/api/people routes", () => {
     });
   });
 
-  xdescribe("PUT to /api/people/:id", () => {
-    it("should update a persons information", () => {});
-    it("should return a 400 if given an invalid id", () => {});
+  describe("PUT to /api/people/:id", () => {
+    it("should update a persons information", async () => {
+      try {
+        const mark = await Person.create(person1);
+        const response = await request(app)
+          .put(`/api/people/${mark.id}`)
+          .send({ isAttending: false })
+          .expect(200);
+
+        expect(response.body).toEqual({
+          message: "Person successfully updated."
+        });
+
+        // grab updated user from the db and make sure the isAttending property was changed
+        const markAfterPutRequest = await Person.findOne({
+          where: { id: mark.id }
+        });
+        expect(markAfterPutRequest.isAttending).toBe(false);
+      } catch (err) {
+        fail(err);
+      }
+    });
+    it("should return a 400 if given an invalid id", async () => {
+      try {
+        const russell = await Person.create(person2);
+        const personNotFoundResponse = await request(app)
+          .put(`/api/people/${russell.id + 1}`)
+          .send({ isAttending: true })
+          .expect(400);
+
+        const notFoundErrors = personNotFoundResponse.body;
+        expect(notFoundErrors.id).toEqual("Person not found.");
+
+        const invalidIdTypeResponse = await request(app)
+          .put(`/api/people/asdf`)
+          .send({ isAttending: true })
+          .expect(400);
+
+        const invalidTypeErrors = invalidIdTypeResponse.body;
+        expect(invalidTypeErrors.id).toEqual("Invalid type for person id.");
+      } catch (err) {
+        fail(err);
+      }
+    });
   });
 
-  xdescribe("DELETE to /api/people/:id", () => {
-    it("should remove a person from the database", () => {});
-    it("should return a 400 if given an invalid id", () => {});
+  describe("DELETE to /api/people/:id", () => {
+    it("should remove a person from the database", async () => {
+      try {
+        const [mark, russell, ryan] = await Promise.all([
+          Person.create(person1),
+          Person.create(person2),
+          Person.create(person3)
+        ]);
+
+        const deleteResponse = await request(app)
+          .delete(`/api/people/${russell.id}`)
+          .expect(200);
+
+        expect(deleteResponse.body).toEqual({
+          message: "Person successfully removed."
+        });
+
+        const russellAfterDelete = await Person.findOne({
+          where: { id: russell.id }
+        });
+        expect(russellAfterDelete).toBe(null);
+      } catch (err) {
+        fail(err);
+      }
+    });
+
+    it("should return a 400 if given an invalid id", async () => {
+      try {
+        const russell = await Person.create(person2);
+        const personNotFoundResponse = await request(app)
+          .delete(`/api/people/${russell.id + 1}`)
+          .expect(400);
+
+        const notFoundErrors = personNotFoundResponse.body;
+        expect(notFoundErrors.id).toEqual("Person not found.");
+
+        const invalidIdTypeResponse = await request(app)
+          .delete(`/api/people/asdf`)
+          .expect(400);
+
+        const invalidTypeErrors = invalidIdTypeResponse.body;
+        expect(invalidTypeErrors.id).toEqual("Invalid type for person id.");
+      } catch (err) {
+        fail(err);
+      }
+    });
   });
 });
